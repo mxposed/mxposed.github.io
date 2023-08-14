@@ -1,0 +1,36 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    background: white;
+}
+
+a {color: #1385cb}
+
+a:visited {color: #0e74bc}
+
+body {
+    font-family: 'Titillium Web', 'Helvetica Neue', Helvetica, Geneva, Arial, sans-serif;
+    font-size: 18px;
+    padding: 20px 50px;
+}
+
+ul {
+    list-style-type: "– ";
+    padding-left: 20px;
+}
+
+dl {
+    display: flex;
+    flex-flow: row wrap;
+}
+dt {
+    flex-basis: 20%;
+    padding: 2px 4px;
+    text-align: right;
+}
+dd {
+    flex-basis: 70%;
+    flex-grow: 1;
+    margin: 0;
+    padding: 2px 4px;
+}
