@@ -5,6 +5,25 @@
     <title>Nick Markov</title>
     <link rel="stylesheet" href="base.css"/>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titillium+Web"/>
+    <script type="text/javascript">
+        function shuffleInterests() {
+            const list = document.getElementById('interests');
+            const interests = [];
+            list.childNodes.forEach(child => {
+                if (child.nodeType == child.ELEMENT_NODE) {
+                    interests.push(child);
+                }
+            });
+            const shuffled = [];
+            let i = interests.length;
+            while (i-- > 0) {
+                const idx = Math.floor(Math.random() * interests.length);
+                shuffled.push(interests.splice(idx, 1)[0]);
+            }
+            list.innerHTML = '';
+            list.append(...shuffled);
+        }
+    </script>
 </head>
 <body>
 <dl>
@@ -35,6 +54,7 @@
 </p>
 <script type="text/javascript">
     document.getElementById('email').href = atob('bWFpbHRvOm5pa29sYWkubWFya292QGljbG91ZC5jb20=');
+    shuffleInterests();
 </script>
 </body>
 </html>
