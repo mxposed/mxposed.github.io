@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Album - Nick Markov</title>
+    <link rel="stylesheet" href="../base.css"/>
+    <link rel="stylesheet" href="gallery.css"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titillium+Web"/>
+</head>
+<body>
+    <div class="page">
+        <a href="index.html" class="back-link">← Back to Albums</a>
+        <h1 id="album-title">Album</h1>
+
+        <div class="photos" id="photos">
+            <!-- Photos will be dynamically loaded here -->
+        </div>
+    </div>
+    <!-- Lightbox for viewing larger images -->
+    <div class="lightbox" id="lightbox">
+        <div class="lightbox-prev" id="lightbox-prev">⟪</div>
+        <div class="lightbox-content" id="lightbox-content"></div>
+        <div class="lightbox-next" id="lightbox-next">⟫</div>
+        <span class="lightbox-close" id="lightbox-close">╳</span>
+    </div>
+
+    <script>
+        // Global variables to track current photo index and all photos
+        let currentPhotoIndex = 0;
+        let allPhotos = [];
+
+        // Function to get URL parameters
+        function getParam(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        // Function to load and display photos from an album
+        async function loadAlbum() {
+            const albumFolder = getParam('album');
+            if (!albumFolder) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            try {
+                // Load album metadata
+                const albumsResponse = await fetch('albums.json');
+                if (!albumsResponse.ok) {
+                    throw new Error('Failed to load albums');
+                }
+
+                const albums = await albumsResponse.json();
+                const album = albums.find(a => a.folder === albumFolder);
+
+                if (!album) {
+                    throw new Error('Album not found');
+                }
+
+                // Set album title
+                document.getElementById('album-title').textContent = album.title;
+                document.title = `${album.title} - Nick Markov`;
+
+                // Load photos
+                const photosResponse = await fetch(`${albumFolder}/photos.json`);
+                if (!photosResponse.ok) {
+                    throw new Error('Failed to load photos');
+                }
+
+                const photos = await photosResponse.json();
+                allPhotos = photos; // Store all photos globally
+                const photosContainer = document.getElementById('photos');
+
+                photos.forEach((photo, index) => {
+                    const photoElement = document.createElement('div');
+                    photoElement.className = 'photo';
+
+                    const imgElement = document.createElement('img');
+                    imgElement.src = `${albumFolder}/${photo.thumbnail || photo.filename}`;
+                    imgElement.alt = photo.title || '';
+                    imgElement.dataset.full = `${albumFolder}/${photo.filename}`;
+                    imgElement.dataset.title = photo.title || '';
+                    imgElement.dataset.index = index; // Store the index for navigation
+
+                    // Add click event to open lightbox
+                    imgElement.addEventListener('click', function() {
+                        currentPhotoIndex = parseInt(this.dataset.index);
+                        openLightbox(this.dataset.full, this.dataset.title);
+                    });
+
+                    photoElement.appendChild(imgElement);
+                    photosContainer.appendChild(photoElement);
+                });
+            } catch (error) {
+                console.error('Error loading album:', error);
+                document.getElementById('photos').innerHTML = `
+                    <p>Error loading album: ${error.message}</p>
+                    <p>Make sure your album directory contains a photos.json file</p>
+                `;
+            }
+        }
+
+        // Lightbox functions
+        function openLightbox(src, title) {
+            const lightbox = document.getElementById('lightbox');
+            const content = document.getElementById('lightbox-content');
+
+            content.innerHTML = '';
+
+            // Create image and ensure it loads properly before displaying
+            const img = new Image();
+            img.onload = function() {
+                // Image is loaded, now add it to the lightbox
+                // Ensure the image doesn't scale beyond its natural dimensions
+                if (img.naturalWidth && img.naturalHeight) {
+                    // Set explicit max-width/max-height to natural dimensions
+                    img.style.maxWidth = `${img.naturalWidth}px`;
+                    img.style.maxHeight = `${img.naturalHeight}px`;
+                }
+
+                content.appendChild(img);
+
+                // Update navigation buttons visibility
+                updateNavigationVisibility();
+            };
+
+            img.onerror = function() {
+                content.innerHTML = '<p>Error loading image</p>';
+            };
+
+            img.src = src;
+            img.alt = title || '';
+
+            // Add title if provided
+            if (title) {
+                const titleElement = document.createElement('div');
+                titleElement.className = 'lightbox-title';
+                titleElement.textContent = title;
+                content.appendChild(titleElement);
+            }
+
+            // Show lightbox immediately while image loads
+            lightbox.classList.add('active');
+
+            // Prevent scrolling on the body
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function showPreviousPhoto() {
+            if (currentPhotoIndex > 0) {
+                currentPhotoIndex--;
+                const albumFolder = getParam('album');
+                const photo = allPhotos[currentPhotoIndex];
+                const fullImagePath = `${albumFolder}/${photo.filename}`;
+                openLightbox(fullImagePath, photo.title || '');
+            }
+        }
+
+        function showNextPhoto() {
+            if (currentPhotoIndex < allPhotos.length - 1) {
+                currentPhotoIndex++;
+                const albumFolder = getParam('album');
+                const photo = allPhotos[currentPhotoIndex];
+                const fullImagePath = `${albumFolder}/${photo.filename}`;
+                openLightbox(fullImagePath, photo.title || '');
+            }
+        }
+
+        function updateNavigationVisibility() {
+            const prevBtn = document.getElementById('lightbox-prev');
+            const nextBtn = document.getElementById('lightbox-next');
+
+            // Hide/show previous button based on current index
+            if (currentPhotoIndex === 0) {
+                prevBtn.classList.add('disabled');
+            } else {
+                prevBtn.classList.remove('disabled');
+            }
+
+            // Hide/show next button based on current index
+            if (currentPhotoIndex === allPhotos.length - 1) {
+                nextBtn.classList.add('disabled');
+            } else {
+                nextBtn.classList.remove('disabled');
+            }
+        }
+
+        // Close lightbox when clicking outside or on close button
+        document.getElementById('lightbox').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeLightbox();
+            }
+        });
+
+        document.getElementById('lightbox-close').addEventListener('click', function() {
+            closeLightbox();
+        });
+
+        // Add click events for navigation buttons
+        document.getElementById('lightbox-prev').addEventListener('click', function(e) {
+            e.stopPropagation(); // Prevent closing the lightbox
+            showPreviousPhoto();
+        });
+
+        document.getElementById('lightbox-next').addEventListener('click', function(e) {
+            e.stopPropagation(); // Prevent closing the lightbox
+            showNextPhoto();
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (!document.getElementById('lightbox').classList.contains('active')) {
+                return; // Only handle keyboard events when lightbox is open
+            }
+
+            if (e.key === 'Escape') {
+                closeLightbox();
+            } else if (e.key === 'ArrowLeft') {
+                showPreviousPhoto();
+            } else if (e.key === 'ArrowRight') {
+                showNextPhoto();
+            }
+        });
+
+        // Load album when the page loads
+        window.addEventListener('DOMContentLoaded', loadAlbum);
+    </script>
+</body>
+</html>

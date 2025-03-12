@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Photography - Nick Markov</title>
+    <link rel="stylesheet" href="../base.css"/>
+    <link rel="stylesheet" href="gallery.css"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titillium+Web"/>
+</head>
+<body>
+    <div class="page">
+        <a href="../index.html" class="back-link">← Back</a>
+        <p>
+            I shoot film on Mamiya C330 and Nikon Fm3a since 2008. Here are some pics over the years.
+            <br/>Depending on the picture, I may quickly or not so quickly find a high-res.
+            <br/>So, if you are interested, please inquire.
+        </p>
+
+        <div class="albums" id="albums">
+            <!-- Albums will be dynamically loaded here -->
+        </div>
+    </div>
+
+    <script>
+        // Function to load and display albums
+        async function loadAlbums() {
+            try {
+                const response = await fetch('albums.json');
+                if (!response.ok) {
+                    throw new Error('Failed to load albums');
+                }
+
+                const albums = await response.json();
+                const albumsContainer = document.getElementById('albums');
+
+                albums.forEach(album => {
+                    const albumElement = document.createElement('a');
+                    albumElement.className = 'album';
+                    albumElement.href = `album.html?album=${album.folder}`;
+
+                    const imgElement = document.createElement('img');
+                    imgElement.src = `${album.folder}/${album.coverImage}`;
+                    imgElement.alt = album.title;
+
+                    const titleElement = document.createElement('div');
+                    titleElement.className = 'album-title';
+                    titleElement.textContent = album.title;
+
+                    albumElement.appendChild(imgElement);
+                    albumElement.appendChild(titleElement);
+                    albumsContainer.appendChild(albumElement);
+                });
+            } catch (error) {
+                console.error('Error loading albums:', error);
+                document.getElementById('albums').innerHTML = `
+                    <p>No albums found. Please create album folders inside the photos directory.</p>
+                    <p>Each album should be in its own subfolder with images inside.</p>
+                `;
+            }
+        }
+
+        // Load albums when the page loads
+        window.addEventListener('DOMContentLoaded', loadAlbums);
+    </script>
+</body>
+</html>

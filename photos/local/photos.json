@@ -1,0 +1,26 @@
+[
+    {
+        "filename": "skyline.jpg",
+        "title": "City Skyline",
+        "description": "Urban skyline view"
+    },
+    {
+        "filename": "biker.jpg",
+        "title": "Cyclist",
+        "description": "A cyclist on the road"
+    },
+    {
+        "filename": "flower.jpg",
+        "title": "Flower",
+        "description": "Beautiful flower closeup"
+    },
+    {
+        "filename": "library.jpg"
+    },
+    {
+        "filename": "lakefront-police.jpg"
+    },
+    {
+        "filename": "swing.jpg"
+    }
+]
