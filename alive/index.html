@@ -5,6 +5,31 @@
     <title>Nick Markov ⟫ Interactive visualization</title>
     <link rel="stylesheet" href="/base.css"/>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titillium+Web"/>
+    <style>
+        .para-with-img {
+            position: relative;
+        }
+        .para-with-img > figure {
+            margin: 0.8em 0 0;
+        }
+        .para-with-img > figure img {
+            height: 150px;
+            display: block;
+        }
+        .para-with-img > figure figcaption {
+            font-size: 0.8em;
+            margin-top: 0.2em;
+            color: #888;
+        }
+        @media (min-width: 1200px) {
+            .para-with-img > figure {
+                position: absolute;
+                left: 100%;
+                top: 0;
+                margin: 0 0 0 1.5em;
+            }
+        }
+    </style>
 </head>
 <body>
 <dl>
@@ -23,14 +48,36 @@
     libraries at once;</li>
     <li><a href="https://mxposed.github.io/notebooks/interactive_cell_visualization.html">comparing cell type contributions to spatial niches</a>.</li>
 </ul>
-<p>
-    For our <a href="https://www.jci.org/articles/view/170682">Machine learning links unresolving secondary pneumonia to mortality in patients with severe pneumonia, including COVID-19</a>
-    publication, I have created an interactive visualization of the electronic health record data from
-    our intensive care unit: <a href="https://nupulmonary.org/carpediem/browser/"><i>CarpeDiem</i> data browser</a>.
-    The primary goal of this tool was to allow a global overview of all the data (each day of each patient),
-    with the ability to zoom in on specific measurement, to enable discovery and spot-checking of patterns.
-    This is an open-source tool built with d3.js, source code is available on <a href="https://github.com/NUSCRIPT/CarpeDiem/tree/main/data_browser">github</a>.
-</p>
+<div class="para-with-img">
+    <p>
+        Around 2023, for our <a href="https://www.jci.org/articles/view/170682">Machine learning links unresolving secondary pneumonia to mortality in patients with severe pneumonia, including COVID-19</a>
+        publication, I have created an interactive visualization of the electronic health record data from
+        our intensive care unit: <a href="https://sqlifts.fsm.northwestern.edu/public/carpediem/browser/"><i>CarpeDiem</i> data browser</a>.
+        The primary goal of this tool was to allow a global overview of all the data (each day of each patient),
+        with the ability to zoom in on specific measurement, to enable discovery and spot-checking of patterns.
+        This is an open-source tool built with d3.js, source code is available on <a href="https://github.com/NUSCRIPT/CarpeDiem/tree/main/data_browser">github</a>.
+    </p>
+    <figure>
+        <a href="https://sqlifts.fsm.northwestern.edu/public/carpediem/browser/"><img src="carpediem.png"/></a>
+        <figcaption>CarpeDiem data browser</figcaption>
+    </figure>
+</div>
+<div class="para-with-img">
+    <p>
+        The 2025 <a href="https://www.biorxiv.org/content/10.64898/2026.05.12.724509">severe pneumonia endotypes manuscript</a>
+        has very rich dataset, including EHR data, flow cytometry and scRNA-seq, and many complimentary
+        analytical approaches for this dataset. This scope is beyond a static pdf publication: it would
+        require a very long supplement with a hundred figures. I have built 
+        <a href="https://sqlifts.fsm.northwestern.edu/public/pneumonia-endotypes/">interactive visualizations</a>
+        to explore these data on the companion website.
+        This is also an open-source tool built with d3.js and morpheus.js, and the source code is available on 
+        <a href="https://github.com/NUPulmonary/2026_Pneumonia_endotypes">github</a>.
+    </p>
+    <figure>
+        <a href="https://sqlifts.fsm.northwestern.edu/public/pneumonia-endotypes/"><img src="serniczek.png"/></a>
+        <figcaption>DEG explorer for the pneumonia endotypes manuscript</figcaption>
+    </figure>
+</div>
 <p>
     Additionally, I have helped with several interactive visualization projects:
 </p>
